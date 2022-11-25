@@ -1,6 +1,6 @@
 public class Arcieree extends Personaggio{
-    public Arciere(){
+    public Arcieree(){
         this.costo=20;
-        this.attacco=1000;
+        this.attacco=10900;
     }
 }
