@@ -1,5 +1,5 @@
-public class Arcieree extends Personaggio{
-    public Arcieree(){
+public class Arciere extends Personaggio{
+    public Arciere(){
         this.costo=20;
         this.attacco=10900;
     }
