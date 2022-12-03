@@ -16,6 +16,12 @@ public class GUI extends JFrame implements ActionListener{
     private JButton Giganteb;
     private JButton Dragob;
     private JTextField Guadagno;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
     public GUI(){
         super("Battaglia");
         Guadagno=new JTextField("0");
