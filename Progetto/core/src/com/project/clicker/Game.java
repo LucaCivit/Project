@@ -3,8 +3,10 @@ package com.project.clicker;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -29,10 +31,16 @@ public class Game extends ApplicationAdapter {
 	private Skin skin;
 	private Table table1;
 	private Table table2;
+	private Table table3;
 	private Sprite sprite;
 	private SpriteBatch batch;
 	LinkedList<TextButton> buttons1 = new LinkedList<TextButton>();
     LinkedList<TextButton> buttons2=new LinkedList<TextButton>();
+    private Label l;
+	Guadagno g=new Guadagno();
+	Personaggio p;
+	private int conta=0;
+
 	public void create() {
 		stage = new Stage(new ScreenViewport());
 		table1=new Table();
@@ -41,6 +49,9 @@ public class Game extends ApplicationAdapter {
 		table1.setHeight(stage.getHeight());
 		table2.setWidth((stage.getWidth()));
 		table2.setHeight(stage.getHeight());
+		table3=new Table();
+		table3.setWidth(stage.getWidth());
+		table3.setHeight(stage.getHeight());
 		skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
 		final TextButton Fanteb = new TextButton("Fante", skin);
 		buttons1.add(Fanteb);
@@ -64,11 +75,24 @@ public class Game extends ApplicationAdapter {
 		buttons2.add(Dragob);
         table1.align(Align.left);
         table1.padLeft(50);
-		for (TextButton a : buttons1) {
+		for (final TextButton a : buttons1) {
 			a.setTransform(true);
 			a.setScale(0.7f);
 			table1.add(a).padBottom(5);
             table1.row();
+            a.addListener(new ClickListener(){
+					public void clicked(InputEvent e,float x, float y){
+			if(conta==0){
+			CreaPersonaggio creaPersonaggio=new CreaPersonaggio();
+			p=creaPersonaggio.create(a);
+			g.setG(g.getG()-p.costo+p.attacco);
+			conta++;
+			}
+			else{
+
+			}
+			}
+			})
 		}
 		table2.align(Align.right);
 		table2.padRight(5);
@@ -82,12 +106,16 @@ public class Game extends ApplicationAdapter {
 		table2.padTop(150);
 		table1.padBottom(40);
 		table2.padBottom(40);
-
+        table3.align(Align.top);
         stage.addActor(table1);
         stage.addActor(table2);
+        stage.addActor(l);
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("gotimage.jpg")));
 		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+
+
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -102,4 +130,5 @@ public class Game extends ApplicationAdapter {
 		public void dispose(){
 			stage.dispose();
 		}
+
 }
