@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Cannone extends Personaggio{
-    public Cannone(String text, Skin skin, Label label){
-        super(text,skin,label);
+    public Cannone(String text, Skin skin){
+        super(text,skin);
         this.costo=200;
         this.attacco=50000;
     }

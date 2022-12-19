@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Gigante extends Personaggio{
-    public Gigante(String text, Skin skin, Label label){
-        super(text,skin,label);
+    public Gigante(String text, Skin skin){
+        super(text,skin);
         this.costo=1000;
         this.attacco=50000;
     }
