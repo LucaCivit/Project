@@ -53,7 +53,7 @@ public class Game extends ApplicationAdapter {
 		table3=new Table();
 		table3.setWidth(stage.getWidth());
 		table3.setHeight(stage.getHeight());
-		skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
+		skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
 		l=new Label(g.toString(),skin);
 		final Fante Fanteb = new Fante("Fante c:0", skin,l);
 		buttons1.add(Fanteb);
