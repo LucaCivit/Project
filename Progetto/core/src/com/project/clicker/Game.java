@@ -34,10 +34,11 @@ public class Game extends ApplicationAdapter {
 	private Table table3;
 	private Sprite sprite;
 	private SpriteBatch batch;
-	LinkedList<TextButton> buttons1 = new LinkedList<TextButton>();
-    LinkedList<TextButton> buttons2=new LinkedList<TextButton>();
+	LinkedList<Personaggio> buttons1 = new LinkedList<Personaggio>();
+    LinkedList<Personaggio> buttons2=new LinkedList<Personaggio>();
     private Label l;
 	Guadagno g=new Guadagno();
+	int count=0;
 	Personaggio p;
 	private int conta=0;
 
@@ -53,60 +54,68 @@ public class Game extends ApplicationAdapter {
 		table3.setWidth(stage.getWidth());
 		table3.setHeight(stage.getHeight());
 		skin = new Skin(Gdx.files.internal("skin/freezing-ui.json"));
-		final TextButton Fanteb = new TextButton("Fante", skin);
+		l=new Label(g.toString(),skin);
+		final Fante Fanteb = new Fante("Fante c:0", skin,l);
 		buttons1.add(Fanteb);
-		final TextButton Spadaccinob = new TextButton("Spadaccino", skin);
+		final Spadaccino Spadaccinob = new Spadaccino("Spadaccino c:5", skin,l);
 		buttons1.add(Spadaccinob);
-		final TextButton Cavaliereb = new TextButton("Cavaliere", skin);
+		final Cavaliere Cavaliereb = new Cavaliere("Cavaliere c:10", skin,l);
 		buttons1.add(Cavaliereb);
-		final TextButton Arciereb = new TextButton("Arciere", skin);
+		final Arciere Arciereb = new Arciere("Arciere c:20", skin,l);
 		buttons1.add(Arciereb);
-		final TextButton Magob = new TextButton("Mago", skin);
+		final Mago Magob = new Mago("Mago c:50", skin,l);
 		buttons1.add(Magob);
-		final TextButton Catapultab = new TextButton("Catapulta", skin);
+		final Catapulta Catapultab = new Catapulta("Catapulta c:120", skin,l);
 		buttons2.add(Catapultab);
-		final TextButton Cannoneb = new TextButton("Cannone", skin);
+		final Cannone Cannoneb = new Cannone("Cannone c:200", skin,l);
 		buttons2.add(Cannoneb);
-		final TextButton Incendiariab = new TextButton("Incendiaria", skin);
+		final Incendiaria Incendiariab = new Incendiaria("Incendiaria c:500", skin,l);
 		buttons2.add(Incendiariab);
-		final TextButton Giganteb = new TextButton("Gigante", skin);
+		final Gigante Giganteb = new Gigante("Gigante c:1000", skin,l);
 		buttons2.add(Giganteb);
-		final TextButton Dragob = new TextButton("Drago", skin);
+		final Drago Dragob = new Drago("Drago c:5000", skin,l);
 		buttons2.add(Dragob);
         table1.align(Align.left);
         table1.padLeft(50);
-		for (final TextButton a : buttons1) {
+		for (final Personaggio a : buttons1) {
 			a.setTransform(true);
 			a.setScale(0.7f);
 			table1.add(a).padBottom(5);
             table1.row();
-            a.addListener(new ClickListener(){
-					public void clicked(InputEvent e,float x, float y){
-			if(conta==0){
-			CreaPersonaggio creaPersonaggio=new CreaPersonaggio();
-			p=creaPersonaggio.create(a);
-			g.setG(g.getG()-p.costo+p.attacco);
-			conta++;
+            if(a!=Fanteb){
+            	a.setDisabled(true);
 			}
-			else{
-
-			}
-			}
-			})
 		}
 		table2.align(Align.right);
 		table2.padRight(5);
-		for (TextButton a : buttons2) {
+		for (Personaggio a : buttons2) {
 			a.setTransform(true);
 			a.setScale(0.7f);
 			table2.add(a).padBottom(5);
 			table2.row();
+			a.setDisabled(true);
 		}
 		table1.padTop(150);
 		table2.padTop(150);
 		table1.padBottom(40);
 		table2.padBottom(40);
         table3.align(Align.top);
+        //oppure rendo la label un attore e ci attacco un listener:quando la label cambia fa
+		//il controllo sui bottoni e li abilita
+        while(count<10){
+        	for(Personaggio a:buttons1){
+        		if (a.getCosto()<=Integer.getInteger(String.valueOf(l.getText()))){
+        			a.setDisabled(false);
+        			count++;
+				}
+			}
+			for(Personaggio a:buttons2){
+				if (a.getCosto()<=Integer.getInteger(String.valueOf(l.getText()))){
+					a.setDisabled(false);
+					count++;
+				}
+			}
+		}
         stage.addActor(table1);
         stage.addActor(table2);
         stage.addActor(l);
