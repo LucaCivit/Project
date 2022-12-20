@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -17,10 +18,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,15 +33,13 @@ public class Game extends ApplicationAdapter {
 	private Table table1;
 	private Table table2;
 	private Table table3;
+	private Table table4;
 	private Sprite sprite;
 	private SpriteBatch batch;
-	LinkedList<MyButton> buttons1 = new LinkedList<MyButton>();
-    LinkedList<MyButton> buttons2=new LinkedList<MyButton>();
     private Label l1;
 	private Label l2;
-	Guadagno g=new Guadagno();
-	int count=0;
-	private int conta=0;
+	Viewport viewport = new ScreenViewport();
+
 
 	public void create() {
 		stage = new Stage(new ScreenViewport());
@@ -48,40 +47,59 @@ public class Game extends ApplicationAdapter {
 		table1 = new Table();
 		table2 = new Table();
 		table3 = new Table();
+		table4 = new Table();
 		table1.setSize(stage.getWidth(),stage.getHeight());
 		table2.setSize(stage.getWidth(),stage.getHeight());
-		table2.setSize(stage.getWidth(),stage.getHeight());
-
+		table3.setSize(stage.getWidth(),stage.getHeight());
+		table4.setSize(stage.getWidth(),stage.getHeight());
+		table1.padTop(150);
+		table2.padTop(150);
+		table1.padBottom(40);
+		table2.padBottom(40);
+		table1.align(Align.left);
+		table1.padLeft(50);
+		table2.align(Align.right);
+		table2.padRight(50);
+		table3.align(Align.top);
+		table4.align(Align.bottom);
+		stage.addActor(table1);
+		stage.addActor(table2);
+		stage.addActor(table3);
+		stage.addActor(table4);
 		skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
 		l1 = new Label("Attacco: ",skin);
 		l2 = new Label("100",skin);
+		table3.add(l1);
+		table3.add(l2);
 		MyButton Fante = new MyButton("Fante \n A:1",skin,"Fante");
 		table1.add(Fante);
 		Fante.setAttacco(1);
 		Fante.addListener(new MyClickListener(l2,Fante.getCosto(),Fante.getAttacco(),Fante));
-        table1.align(Align.left);
-        table1.padLeft(50);
-		table2.align(Align.right);
-		table2.padRight(5);
+
 		MyButton Arciere = new MyButton("Arciere \n C:100 A:10 ",skin,"Arciere");
-		Arciere.setHeight(10);
-		Arciere.setWidth(100);
 		table2.add(Arciere);
 		Arciere.setAttacco(10);
 		Arciere.setCosto(100);
 		Arciere.setDisabled(true);
 		Arciere.addListener(new MyClickListener(l2,Arciere.getCosto(),Arciere.getAttacco(),Arciere));
-		table1.padTop(150);
-		table2.padTop(150);
-		table1.padBottom(40);
-		table2.padBottom(40);
-        table3.align(Align.top);
-		table3.add(l1);
-        table3.add(l2);
 
-        stage.addActor(table1);
-        stage.addActor(table2);
-		stage.addActor(table3);
+		MyButton Cannone = new MyButton("Cannone \n C:1000 A:500 ",skin,"Cannone");
+		table2.add(Cannone);
+		Cannone.setCosto(1000);
+		Cannone.setAttacco(500);
+		Cannone.setDisabled(true);
+		Cannone.addListener(new MyClickListener(l2,Cannone.getCosto(),Cannone.getAttacco(),Cannone));
+
+
+		TextButton Save = new TextButton("Salva",skin);
+		TextButton Upgrade = new TextButton("Upgrade",skin);
+		table4.add(Save);
+		table4.add(Upgrade);
+		Upgrade.addListener(new ClickListener(){
+			public void clicked(InputEvent event, float x, float y) {
+				stage.setViewport(viewport);
+			}
+		});
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("gotimage.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
