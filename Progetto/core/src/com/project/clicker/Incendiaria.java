@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Incendiaria extends Personaggio{
-    public Incendiaria(String text, Skin skin, Label label ){
-        super(text,skin,label);
+    public Incendiaria(String text, Skin skin){
+        super(text,skin);
         this.costo=500;
         this.attacco=150000;
     }

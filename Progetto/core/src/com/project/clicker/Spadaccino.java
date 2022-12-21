@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Spadaccino extends Personaggio{
-    public Spadaccino(String text, Skin skin, Label label){
-        super(text,skin,label);
+    public Spadaccino(String text, Skin skin){
+        super(text,skin);
         this.costo=5;
         this.attacco=100;
     }

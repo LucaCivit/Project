@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Mago extends Personaggio{
-    public Mago(String text, Skin skin, Label label){
-        super(text,skin,label);
+    public Mago(String text, Skin skin){
+        super(text,skin);
         this.costo=50;
         this.attacco=5000;
     }

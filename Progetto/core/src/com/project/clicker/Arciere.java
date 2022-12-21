@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 public class Arciere extends Personaggio{
-    public Arciere(String text, Skin skin, Label label){
-        super(text,skin,label);
+    public Arciere(String text, Skin skin){
+        super(text,skin);
         this.costo=20;
         this.attacco=1000;
     }
