@@ -4,6 +4,7 @@ package com.project.clicker;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,8 +27,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Game extends ApplicationAdapter {
-
+public class Game implements Screen {
+    private com.badlogic.gdx.Game g;
 	private Stage stage;
 	private Skin skin;
 	private Table table1;
@@ -42,7 +43,8 @@ public class Game extends ApplicationAdapter {
 	Viewport viewport = new ScreenViewport();
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
 
-	public void create() {
+	public Game(com.badlogic.gdx.Game game) {
+		g=game;
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 		table1 = new Table();
@@ -167,7 +169,14 @@ public class Game extends ApplicationAdapter {
 		sprite.setSize(stage.getWidth(), stage.getHeight());
 	}
 
-	public void render() {
+
+	@Override
+	public void show() {
+
+	}
+
+	@Override
+	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
@@ -175,7 +184,27 @@ public class Game extends ApplicationAdapter {
 		stage.draw();
 	}
 
-		public void dispose(){
+	@Override
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
+	@Override
+	public void hide() {
+
+	}
+
+	public void dispose(){
 
 		stage.dispose();
 		}
