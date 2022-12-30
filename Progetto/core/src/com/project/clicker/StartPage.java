@@ -37,14 +37,7 @@ public class StartPage  implements Screen {
         buttonstart = new TextButton("Start", skin);
         buttonexit = new TextButton("Exit", skin);
         buttoncontinue=new TextButton("Continue",skin);
-        buttonstart.addListener(new InputListener() {
-            public void touchUp(InputEvent e, float x, float y) {
-                myg.setScreen(new Game(myg));
-            }
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-        });
+
         table1.add(name);
         table2.add(buttonstart);
         table2.add(buttonexit);
@@ -66,6 +59,9 @@ public class StartPage  implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if(buttonstart.isPressed()){
+            myg.setScreen(new Game(myg));
+        }
         stage.act();
         stage.draw();
     }
