@@ -26,6 +26,8 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.text.*;
+
 
 public class Game implements Screen {
     private com.badlogic.gdx.Game g;
@@ -40,11 +42,10 @@ public class Game implements Screen {
 	private SpriteBatch batch;
     private Label l1;
 	private Label l2;
-	Viewport viewport = new ScreenViewport();
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
 
-	public Game(com.badlogic.gdx.Game game) {
-		g=game;
+	public Game(com.badlogic.gdx.Game game, final Database dat,int score) {
+		this.g = game;
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
 		table1 = new Table();
@@ -76,7 +77,7 @@ public class Game implements Screen {
 
 		skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
 		l1 = new Label("Attacco: ",skin);
-		l2 = new Label("100",skin);
+		l2 = new Label(Integer.toString(score),skin);
 		table3.add(l1);
 		table3.add(l2);
 		MyButton Fante = new MyButton("Fante \n A:1",skin,"Fante");
@@ -159,23 +160,22 @@ public class Game implements Screen {
 		TextButton Upgrade = new TextButton("Upgrade",skin);
 		table4.add(Save);
 		table4.add(Upgrade);
-		Upgrade.addListener(new ClickListener(){
+		Save.addListener(new ClickListener(){
+			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				stage.setViewport(viewport);
+				dat.save(Integer.valueOf(String.valueOf(l2.getText())));
 			}
 		});
 		batch = new SpriteBatch();
-		sprite = new Sprite(new Texture(Gdx.files.internal("gotimage.jpg")));
+		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
 	}
 
 
-	@Override
 	public void show() {
-
+		Gdx.input.setInputProcessor(stage);
 	}
 
-	@Override
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
@@ -203,6 +203,7 @@ public class Game implements Screen {
 	public void hide() {
 
 	}
+
 
 	public void dispose(){
 
