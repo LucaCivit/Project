@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        
+
 
     }
 }
@@ -41,6 +41,7 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "java-library"
+
 
 
     dependencies {

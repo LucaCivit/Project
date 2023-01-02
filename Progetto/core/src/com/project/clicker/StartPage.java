@@ -12,6 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.Date;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class StartPage  implements Screen {
     private Stage stage;
     private Skin skin;
@@ -24,8 +29,11 @@ public class StartPage  implements Screen {
     private Table table2;
     private Dialog dlgcontinue;
     private com.badlogic.gdx.Game myg;
+    Database db = new Database();
+
 
     public StartPage(final com.badlogic.gdx.Game g) {
+
         myg=g;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -33,6 +41,13 @@ public class StartPage  implements Screen {
         table2 = new Table();
         table1.setSize(stage.getWidth(), stage.getHeight());
         table2.setSize(stage.getWidth(), stage.getHeight());
+        db.start();
+        try {
+            db.test();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
         name = new Label("Game", skin);
         buttonstart = new TextButton("Start", skin);
@@ -41,7 +56,7 @@ public class StartPage  implements Screen {
         ok=new TextButton("ok",skin);
 
         dlgcontinue=new Dialog("",skin);
-        dlgcontinue.text("You gained tot points");
+        dlgcontinue.text("Sei stato via per" + CalcolaTempo(db)+"tempo");
         dlgcontinue.button(ok);
         buttoncontinue.addListener(new ClickListener(){
             @Override
@@ -50,7 +65,13 @@ public class StartPage  implements Screen {
                 dlgcontinue.show(stage);
             }
         });
-
+        ok.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                myg.setScreen(new Game(myg,db,db.getScore()));
+            }
+        });
         buttonexit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -71,6 +92,23 @@ public class StartPage  implements Screen {
 
     }
 
+    public long CalcolaTempo(Database db){
+        String optime = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        String cltime = db.getTime();
+        Date date1 = new Date();
+        Date date2 = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        try {
+            date1 = format.parse(optime);
+            date2 = format.parse(cltime);
+        } catch (ParseException p){
+            p.printStackTrace();
+        }
+        long difference = date2.getTime() - date1.getTime();
+        return difference;
+
+    }
+
 
     @Override
     public void show() {
@@ -81,7 +119,7 @@ public class StartPage  implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(buttonstart.isPressed()){
-            myg.setScreen(new Game(myg));
+            myg.setScreen(new Game(myg,db,0));
         }
         stage.act();
         stage.draw();

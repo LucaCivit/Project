@@ -4,6 +4,9 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-core"
-
-
-
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
+}
