@@ -4,6 +4,9 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,10 +19,13 @@ import java.util.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 public class StartPage  implements Screen {
     private Stage stage;
     private Skin skin;
+    private SpriteBatch batch;
+    private Sprite sprite;
     private TextButton buttonstart;
     private TextButton buttonexit;
     private TextButton buttoncontinue;
@@ -34,7 +40,7 @@ public class StartPage  implements Screen {
 
     public StartPage(final com.badlogic.gdx.Game g) {
 
-        myg=g;
+        myg = g;
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         table1 = new Table();
@@ -50,13 +56,13 @@ public class StartPage  implements Screen {
 
         skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
         name = new Label("Game", skin);
-        buttonstart = new TextButton("Start", skin);
-        buttonexit = new TextButton("Exit", skin);
-        buttoncontinue=new TextButton("Continue",skin);
-        ok=new TextButton("ok",skin);
-
+        buttonstart = new TextButton("Nuovo", skin);
+        buttoncontinue = new TextButton("Continua",skin);
+        buttonexit = new TextButton("Esci",skin);
+        ok = new TextButton("ok",skin);
         dlgcontinue=new Dialog("",skin);
-        dlgcontinue.text("Sei stato via per" + CalcolaTempo(db)+"tempo");
+        final int attacco = CalcolaGuadagno(db);
+        dlgcontinue.text("Sei stato via per " + CalcolaTempo(db) + "\n e hai guadagnato "+String.valueOf(attacco)+" atk");
         dlgcontinue.button(ok);
         buttoncontinue.addListener(new ClickListener(){
             @Override
@@ -69,45 +75,85 @@ public class StartPage  implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                myg.setScreen(new Game(myg,db,db.getScore()));
+                myg.setScreen(new Game(myg,db,(db.getScore()+attacco)));
             }
         });
         buttonexit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                dispose();
+                Gdx.app.exit();
             }
         });
         table1.add(name);
-        table2.add(buttonstart);
+        table2.add(buttonstart).padRight(40).padLeft(350);
+        table2.add(buttoncontinue).padRight(200);
         table2.add(buttonexit);
-        table2.add(buttoncontinue);
         table1.padTop(20);
         table1.align(Align.top);
         table2.padBottom(50);
         table2.align(Align.bottom);
         stage.addActor(table1);
         stage.addActor(table2);
+        batch = new SpriteBatch();
+        sprite = new Sprite(new Texture(Gdx.files.internal("start.jpg")));
+        sprite.setSize(stage.getWidth(), stage.getHeight());
 
     }
 
-    public long CalcolaTempo(Database db){
+    public String CalcolaTempo(Database db){
         String optime = new SimpleDateFormat("HH:mm:ss").format(new Date());
         String cltime = db.getTime();
         Date date1 = new Date();
         Date date2 = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         try {
-            date1 = format.parse(optime);
-            date2 = format.parse(cltime);
+            date1 = formatter.parse(optime);
+            date2 = formatter.parse(cltime);
         } catch (ParseException p){
             p.printStackTrace();
         }
-        long difference = date2.getTime() - date1.getTime();
-        return difference;
+        long millis = date1.getTime() - date2.getTime();
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis)
+                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
+                - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+
+        StringBuilder b = new StringBuilder();
+        b.append(hours == 0 ? "00" : hours < 10 ? String.valueOf("0" + hours) :
+                String.valueOf(hours));
+        b.append(":");
+        b.append(minutes == 0 ? "00" : minutes < 10 ? String.valueOf("0" + minutes) :
+                String.valueOf(minutes));
+        b.append(":");
+        b.append(seconds == 0 ? "00" : seconds < 10 ? String.valueOf("0" + seconds) :
+                String.valueOf(seconds));
+        return b.toString();
 
     }
+    public int CalcolaGuadagno(Database db) {
+        String optime = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        String cltime = db.getTime();
+        Date date1 = new Date();
+        Date date2 = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        try {
+            date1 = formatter.parse(optime);
+            date2 = formatter.parse(cltime);
+        } catch (ParseException p) {
+            p.printStackTrace();
+        }
+        long millis = date1.getTime() - date2.getTime();
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis)
+                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
+                - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long guadagno = (hours*100) + (minutes*20) +(seconds*1);
+        return (int) guadagno;
+    }
+
 
 
     @Override
@@ -118,6 +164,9 @@ public class StartPage  implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        sprite.draw(batch);
+        batch.end();
         if(buttonstart.isPressed()){
             myg.setScreen(new Game(myg,db,0));
         }

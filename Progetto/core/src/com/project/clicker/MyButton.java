@@ -16,6 +16,7 @@ public class MyButton extends TextButton {
         this.name = nome;
     }
 
+
     public int getCosto() {
         return costo;
     }
