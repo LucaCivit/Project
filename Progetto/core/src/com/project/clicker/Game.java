@@ -130,12 +130,12 @@ public class Game implements Screen {
 		Mago.setCosto(5000);
 		Mago.setAttacco(500);
 
-		MyButton Incendiaria = new MyButton("Incendiaria \n C:20000 A:700 ",skin,"Incendiaria");
-		table2.add(Incendiaria).width(200).height(100);
+		MyButton Balestra = new MyButton("Balestra \n C:20000 A:700 ",skin,"Balestra");
+		table2.add(Balestra).width(200).height(100);
 		table2.row();
-		buttons.add(Incendiaria);
-		Incendiaria.setCosto(20000);
-		Incendiaria.setAttacco(700);
+		buttons.add(Balestra);
+		Balestra.setCosto(20000);
+		Balestra.setAttacco(700);
 
 		MyButton Gigante = new MyButton("Gigante \n C:50000 A:1000 ",skin,"Gigante");
 		table1.add(Gigante).width(200).height(100);
