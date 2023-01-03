@@ -43,6 +43,7 @@ public class Game implements Screen {
     private Label l1;
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
+    private Controattacco cpu;
 
 	public Game(com.badlogic.gdx.Game game, final Database dat,int score) {
 		this.g = game;
@@ -169,6 +170,9 @@ public class Game implements Screen {
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
+
+		cpu=new Controattacco(l2);
+		cpu.combatti();
 	}
 
 
