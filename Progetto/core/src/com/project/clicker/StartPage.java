@@ -75,7 +75,7 @@ public class StartPage  implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                myg.setScreen(new Game(myg,db,(db.getScore()+attacco)));
+                myg.setScreen(new Game(myg,db,(db.getScore()+attacco),false));
             }
         });
         buttonexit.addListener(new ClickListener(){
@@ -168,7 +168,7 @@ public class StartPage  implements Screen {
         sprite.draw(batch);
         batch.end();
         if(buttonstart.isPressed()){
-            myg.setScreen(new Game(myg,db,0));
+            myg.setScreen(new Game(myg,db,0,true));
         }
         stage.act();
         stage.draw();

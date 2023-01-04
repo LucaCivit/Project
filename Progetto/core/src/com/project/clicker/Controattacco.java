@@ -8,7 +8,7 @@ public class Controattacco {
     Label l;
     int conta=0;
     int punteggio;
-    int start=(int)System.currentTimeMillis();
+    long start= System.currentTimeMillis();
     Random rnd;
 
     public Controattacco(Label l) {
@@ -17,16 +17,14 @@ public class Controattacco {
 
     public void combatti() {
         while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            conta = (int) System.currentTimeMillis() - start;
-            if (conta > 10) {
+            if ((System.currentTimeMillis() - start)> 10) {
                 punteggio = Integer.parseInt(String.valueOf(l.getText()));
-                l.setText(Integer.toString(punteggio - rnd.nextInt(conta)));
+                l.setText(Integer.toString(punteggio - rnd.nextInt(1000)));
+            }
+                else{
+                    continue;
+                }
             }
         }
     }
-}
+

@@ -45,7 +45,8 @@ public class Game implements Screen {
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
     private Controattacco cpu;
 
-	public Game(com.badlogic.gdx.Game game, final Database dat,int score) {
+
+	public Game(com.badlogic.gdx.Game game, final Database dat,int score,boolean nuovo) {
 		this.g = game;
 		stage = new Stage(new ScreenViewport());
 		Gdx.input.setInputProcessor(stage);
@@ -149,14 +150,21 @@ public class Game implements Screen {
 		buttons.add(Drago);
 		Drago.setCosto(1000000);
 		Drago.setAttacco(2000);
-
+		int check = 0;
+		if(nuovo == true){
+			check = 1;
+		}
+		 else{check = dat.getUnlocked();}
+		for(int i = 0; i< check;++i){
+			buttons.get(i).setDisabled(false);
+			buttons.get(i).setText(buttons.get(i).name +"\n A:" + String.valueOf(buttons.get(i).getAttacco()));
+		}
+		for(int i = check; i<10;++i){
+			buttons.get(i).setDisabled(true);
+		}
 		for(MyButton a:buttons){
-			if(a!=Fante){
-			a.setDisabled(true);
-			}
 			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a));
 		}
-
 		TextButton Save = new TextButton("Salva",skin);
 		TextButton Upgrade = new TextButton("Upgrade",skin);
 		table4.add(Save);
@@ -164,15 +172,21 @@ public class Game implements Screen {
 		Save.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				dat.save(Integer.valueOf(String.valueOf(l2.getText())));
+				int val = 10;
+				for(MyButton a:buttons){
+					if(a.isDisabled()){
+						val--;
+					}
+				}
+				dat.save(Integer.valueOf(String.valueOf(l2.getText())),val);
 			}
 		});
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
 
-		cpu=new Controattacco(l2);
-		cpu.combatti();
+		//cpu=new Controattacco(l2);
+		//cpu.combatti();
 	}
 
 
