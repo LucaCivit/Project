@@ -32,22 +32,24 @@ public class Database {
            rs = st.executeQuery("SELECT * FROM player ");
            System.out.println("ID = "+ rs.getString("ID"));
            System.out.println("score = " + rs.getString("score"));
+            System.out.println("unlocked = " + rs.getString("unlocked"));
            System.out.println("time = " + rs.getString("time"));
         }
         catch (SQLException e) {
             st.executeUpdate("DROP TABLE IF EXISTS player");
-            st.executeUpdate("CREATE TABLE player ( ID INTEGER,score INTEGER,time TEXT,PRIMARY KEY (ID))");
-            upst = connection.prepareStatement("INSERT INTO player VALUES (1 , 0 , 0)");
+            st.executeUpdate("CREATE TABLE player ( ID INTEGER,score INTEGER,unlocked INTEGER,time TEXT,PRIMARY KEY (ID))");
+            upst = connection.prepareStatement("INSERT INTO player VALUES (1 , 0 , 1 , 0)");
             upst.executeUpdate();
         }
     }
 
-    public void save(int Score){
+    public void save(int Score,int unlocked){
         try {
             String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
-            upst = connection.prepareStatement("UPDATE player SET score=?, time=? WHERE ID = 1");
+            upst = connection.prepareStatement("UPDATE player SET score=?,unlocked=?, time=? WHERE ID = 1");
             upst.setInt(1,Score);
-            upst.setString(2,timeStamp);
+            upst.setInt(2,unlocked);
+            upst.setString(3,timeStamp);
             upst.executeUpdate();
 
         } catch (SQLException e) {
@@ -65,6 +67,18 @@ public class Database {
             e.printStackTrace();
         }
         return score;
+    }
+
+    public int getUnlocked(){
+        int unlckd = 0;
+        try {
+            rs = st.executeQuery("SELECT * FROM player ");
+            unlckd = rs.getInt("unlocked");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return unlckd;
     }
 
     public String getTime(){
