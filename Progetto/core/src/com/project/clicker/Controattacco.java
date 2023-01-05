@@ -9,7 +9,7 @@ public class Controattacco extends Thread {
     int conta;
     int punteggio;
     Random rnd=new Random();
-
+    float timeel= 0;
     public Controattacco(Label l) {
         super();
         this.l = l;
@@ -17,13 +17,17 @@ public class Controattacco extends Thread {
     }
 
     public void run() {
-            if ((conta)> 10) {
+
+        if (timeel > 10) {
                 punteggio = Integer.parseInt(String.valueOf(l.getText()));
-                l.setText(Integer.toString(punteggio - rnd.nextInt(conta)));
+                l.setText(Integer.toString(punteggio - rnd.nextInt(20)));
+                timeel = 0;
             }
-                else{
-                    conta++;
-                }
-            }
+        timeel++;
+    }
+
+
+
+
     }
 
