@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -43,7 +44,7 @@ public class Game implements Screen {
     private Label l1;
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
-    private Controattacco cpu;
+    private Nemico enemy;
 
 
 	public Game(com.badlogic.gdx.Game game, final Database dat,int score,boolean nuovo) {
@@ -83,13 +84,15 @@ public class Game implements Screen {
 		table3.add(l1);
 		table3.add(l2);
 		MyButton Fante = new MyButton("Fante \n A:1",skin,"Fante");
-		table1.add(Fante).width(200).height(100);
+		Fante.getLabel().setFontScale(0.63f);
+		table1.add(Fante).width(200).height(100).padBottom(20);
 		table1.row();
 		buttons.add(Fante);
 		Fante.setAttacco(1);
 
 		MyButton Spadaccino = new MyButton("Spadaccino \n C:10 A:5 ",skin,"Spadaccino");
-		table2.add(Spadaccino).width(200).height(100);
+		Spadaccino.getLabel().setFontScale(0.63f);
+		table2.add(Spadaccino).width(200).height(100).padBottom(20);
 		table2.row();
 		buttons.add(Spadaccino);
 		Spadaccino.setAttacco(10);
@@ -97,21 +100,24 @@ public class Game implements Screen {
 
 
 		MyButton Cavaliere = new MyButton("Cavaliere \n C:50 A:20 ",skin,"Cavaliere");
-		table1.add(Cavaliere).width(200).height(100);
+		Cavaliere.getLabel().setFontScale(0.63f);
+		table1.add(Cavaliere).width(200).height(100).padBottom(20);
 		table1.row();
 		buttons.add(Cavaliere);
 		Cavaliere.setCosto(50);
 		Cavaliere.setAttacco(20);
 
 		MyButton Arciere = new MyButton("Arciere \n C:150 A:50 ",skin,"Arciere");
-		table2.add(Arciere).width(200).height(100);
+		Arciere.getLabel().setFontScale(0.63f);
+		table2.add(Arciere).width(200).height(100).padBottom(20);
 		table2.row();
 		buttons.add(Arciere);
 		Arciere.setCosto(150);
 		Arciere.setAttacco(50);
 
 		MyButton Catapulta = new MyButton("Catapulta \n C:500 A:100 ",skin,"Catapulta");
-		table1.add(Catapulta).width(200).height(100);
+		Catapulta.getLabel().setFontScale(0.63f);
+		table1.add(Catapulta).width(200).height(100).padBottom(20);
 		table1.row();
 		buttons.add(Catapulta);
 		Catapulta.setCosto(500);
@@ -119,33 +125,38 @@ public class Game implements Screen {
 
 
 		MyButton Cannone = new MyButton("Cannone \n C:1000 A:250 ",skin,"Cannone");
-		table2.add(Cannone).width(200).height(100);
+		Cannone.getLabel().setFontScale(0.63f);
+		table2.add(Cannone).width(200).height(100).padBottom(20);
 		table2.row();
 		buttons.add(Cannone);
 		Cannone.setCosto(1000);
 		Cannone.setAttacco(250);
 
 		MyButton Mago = new MyButton("Mago \n C:5000 A:500 ",skin,"Mago");
-		table1.add(Mago).width(200).height(100);
+		Mago.getLabel().setFontScale(0.63f);
+		table1.add(Mago).width(200).height(100).padBottom(20);
 		table1.row();
 		buttons.add(Mago);
 		Mago.setCosto(5000);
 		Mago.setAttacco(500);
 
 		MyButton Balestra = new MyButton("Balestra \n C:20000 A:700 ",skin,"Balestra");
-		table2.add(Balestra).width(200).height(100);
+		Balestra.getLabel().setFontScale(0.63f);
+		table2.add(Balestra).width(200).height(100).padBottom(20);
 		table2.row();
 		buttons.add(Balestra);
 		Balestra.setCosto(20000);
 		Balestra.setAttacco(700);
 
 		MyButton Gigante = new MyButton("Gigante \n C:50000 A:1000 ",skin,"Gigante");
+		Gigante.getLabel().setFontScale(0.63f);
 		table1.add(Gigante).width(200).height(100);
 		buttons.add(Gigante);
 		Gigante.setCosto(50000);
 		Gigante.setAttacco(1000);
 
 		MyButton Drago = new MyButton("Drago \n C:1000000 A:2000 ",skin,"Drago");
+		Drago.getLabel().setFontScale(0.63f);
 		table2.add(Drago).width(200).height(100);
 		buttons.add(Drago);
 		Drago.setCosto(1000000);
@@ -166,9 +177,18 @@ public class Game implements Screen {
 			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a));
 		}
 		TextButton Save = new TextButton("Salva",skin);
-		TextButton Upgrade = new TextButton("Upgrade",skin);
-		table4.add(Save);
-		table4.add(Upgrade);
+		Save.setColor(0,1,0,1);
+		TextButton Esci = new TextButton("Esci",skin);
+		Esci.setColor(1,0,0,1);
+		table4.add(Save).width(200).height(100).padRight(20);
+		table4.add(Esci).width(200).height(100);
+		Esci.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				Gdx.app.exit();
+			}
+		});
 		Save.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -185,6 +205,9 @@ public class Game implements Screen {
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
 
+
+
+
 	}
 
 
@@ -196,12 +219,8 @@ public class Game implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
-		cpu=new Controattacco(l2);
-		cpu.start();
-		while(true){
-			cpu.sleep(1000);
-			cpu.run();
-		}
+
+
 		batch.end();
 		stage.draw();
 	}
