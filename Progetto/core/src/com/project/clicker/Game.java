@@ -44,7 +44,19 @@ public class Game implements Screen {
     private Label l1;
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
-    private Nemico enemy;
+    private Nemico enemy=new Nemico();
+    private TextButton ok1=new TextButton("ok",skin);
+    private TextButton ok2=new TextButton("ok",skin);
+	private float timeel=0;
+	private int punteggio;
+	private Random rnd=new Random();
+	private int conta=1;
+    private int controattacco;
+    private Dialog vittoria;
+    private Dialog sconfitta;
+    private Boolean partita=false;
+    private Boolean finito=false;
+
 
 
 	public Game(com.badlogic.gdx.Game game, final Database dat,int score,boolean nuovo) {
@@ -83,6 +95,8 @@ public class Game implements Screen {
 		l2 = new Label(Integer.toString(score),skin);
 		table3.add(l1);
 		table3.add(l2);
+
+
 		MyButton Fante = new MyButton("Fante \n A:1",skin,"Fante");
 		Fante.getLabel().setFontScale(0.63f);
 		table1.add(Fante).width(200).height(100).padBottom(20);
@@ -174,7 +188,7 @@ public class Game implements Screen {
 			buttons.get(i).setDisabled(true);
 		}
 		for(MyButton a:buttons){
-			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a));
+			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a,enemy));
 		}
 		TextButton Save = new TextButton("Salva",skin);
 		Save.setColor(0,1,0,1);
@@ -201,11 +215,29 @@ public class Game implements Screen {
 				dat.save(Integer.valueOf(String.valueOf(l2.getText())),val);
 			}
 		});
+
+//La parte dei dialoghi non funziona
+		vittoria=new Dialog("",skin){
+			protected void result(Object object) {
+				if ((Boolean) object) {
+					hide();
+				}
+			}
+		};
+		vittoria.text("Hai sconfitto il nemico");
+		vittoria.button(ok1,true);
+		sconfitta=new Dialog("",skin){
+			protected void result(Object object) {
+				if ((Boolean) object) {
+					hide();
+				}
+			}
+		};
+		sconfitta.text("Hai perso");
+		sconfitta.button(ok2,true);
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
-
-
 
 
 	}
@@ -219,8 +251,27 @@ public class Game implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
+		if(timeel>3 && finito==false) {
+			punteggio = Integer.parseInt(String.valueOf(l2.getText()));
+			controattacco=rnd.nextInt(10*conta);
+			l2.setText(Integer.toString(punteggio - controattacco));
+			enemy.rinforza(controattacco);
+			conta++;
+			timeel=0;
+			partita=true;
+		}
+		else{
+			timeel+= delta;
+		}
 
-
+		if(punteggio<=0 && partita==true){
+			sconfitta.show(stage);
+			finito=true;
+		}
+		if(enemy.getDanno()>=15000 && finito==false){
+			vittoria.show(stage);
+			finito=true;
+		}
 		batch.end();
 		stage.draw();
 	}
@@ -247,7 +298,6 @@ public class Game implements Screen {
 
 
 	public void dispose(){
-
 		stage.dispose();
 		}
 
