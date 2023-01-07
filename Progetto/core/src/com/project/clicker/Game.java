@@ -45,8 +45,8 @@ public class Game implements Screen {
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
     private Nemico enemy=new Nemico();
-    private TextButton ok1=new TextButton("ok",skin);
-    private TextButton ok2=new TextButton("ok",skin);
+    private TextButton ok1;
+    private TextButton ok2;
 	private float timeel=0;
 	private int punteggio;
 	private Random rnd=new Random();
@@ -217,24 +217,31 @@ public class Game implements Screen {
 		});
 
 //La parte dei dialoghi non funziona
+		ok1=new TextButton("ok",skin);
+		ok2=new TextButton("ok",skin);
+
 		vittoria=new Dialog("",skin){
-			protected void result(Object object) {
-				if ((Boolean) object) {
-					hide();
+			protected void result(Object object){
+				if((Boolean) object){
+					setVisible(false);
 				}
 			}
 		};
 		vittoria.text("Hai sconfitto il nemico");
 		vittoria.button(ok1,true);
+
+
 		sconfitta=new Dialog("",skin){
-			protected void result(Object object) {
-				if ((Boolean) object) {
-					hide();
+			protected void result(Object object){
+				if((Boolean) object){
+					setVisible(false);
 				}
 			}
 		};
 		sconfitta.text("Hai perso");
 		sconfitta.button(ok2,true);
+
+
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
@@ -251,9 +258,9 @@ public class Game implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
-		if(timeel>3 && finito==false) {
+		if(timeel>5 && finito==false) {
 			punteggio = Integer.parseInt(String.valueOf(l2.getText()));
-			controattacco=rnd.nextInt(10*conta);
+			controattacco=rnd.nextInt(20*conta);
 			l2.setText(Integer.toString(punteggio - controattacco));
 			enemy.rinforza(controattacco);
 			conta++;
