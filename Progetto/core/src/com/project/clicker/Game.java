@@ -44,7 +44,8 @@ public class Game implements Screen {
     private Label l1;
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
-    private Nemico enemy=new Nemico();
+    private Texture enem=new Texture("Gigante.png");
+    private Nemico enemy=new Nemico(enem);
     private TextButton ok1;
     private TextButton ok2;
 	private float timeel=0;
@@ -258,6 +259,7 @@ public class Game implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
+		batch.draw(enem,700,200);
 		if(timeel>5 && finito==false) {
 			punteggio = Integer.parseInt(String.valueOf(l2.getText()));
 			controattacco=rnd.nextInt(20*conta);
