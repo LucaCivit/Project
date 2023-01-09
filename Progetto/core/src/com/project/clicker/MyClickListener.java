@@ -2,6 +2,7 @@ package com.project.clicker;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import java.util.LinkedList;
@@ -12,8 +13,10 @@ public class MyClickListener extends ClickListener {
     public int costo;
     public int attacco;
     public MyButton button;
+    public ProgressBar pro;
 
-    public MyClickListener(Label l,int costo,int attacco,MyButton bn,Nemico enemy) {
+    public MyClickListener(Label l,int costo,int attacco,MyButton bn,Nemico enemy,ProgressBar progressBar) {
+        this.pro = progressBar;
         this.label = l;
         this.costo = costo;
         this.attacco = attacco;
@@ -35,6 +38,8 @@ public class MyClickListener extends ClickListener {
         else{
             label.setText(Integer.toString(punteggio+attacco));
             enemy.danneggia(attacco);
+            pro.setValue(pro.getMaxValue()-enemy.getDanno());
+
         }
     }
 }
