@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -28,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.text.*;
+import java.util.List;
 
 
 public class Game implements Screen {
@@ -38,14 +38,12 @@ public class Game implements Screen {
 	private Table table2;
 	private Table table3;
 	private Table table4;
-	private Table table5;
 	private Sprite sprite;
 	private SpriteBatch batch;
     private Label l1;
 	private Label l2;
     private LinkedList<MyButton> buttons=new LinkedList<MyButton>();
-    private Texture enem=new Texture("Gigante.png");
-    private Nemico enemy=new Nemico(enem);
+    public Nemico enemy = new Nemico(new Texture("badguy.png"),1000,1);;
     private TextButton ok1;
     private TextButton ok2;
 	private float timeel=0;
@@ -53,10 +51,10 @@ public class Game implements Screen {
 	private Random rnd=new Random();
 	private int conta=1;
     private int controattacco;
-    private Dialog vittoria;
-    private Dialog sconfitta;
-    private Boolean partita=false;
-    private Boolean finito=false;
+    public Dialog sconfitta;
+    public ProgressBar life ;
+    public String[] enemies ={"badguy.png","golem.png","blob.png","drago.png"};
+    public int i = 0;
 
 
 
@@ -68,24 +66,18 @@ public class Game implements Screen {
 		table2 = new Table();
 		table3 = new Table();
 		table4 = new Table();
-		table5=new Table();
 		table1.setSize(stage.getWidth(),stage.getHeight());
 		table2.setSize(stage.getWidth(),stage.getHeight());
 		table3.setSize(stage.getWidth(), stage.getHeight());
 		table4.setSize(stage.getWidth(), stage.getHeight());
-		table5.setSize(stage.getWidth(),stage.getHeight());
-		table5.add(table1,table2);
-		table5.padTop(50);
 		table1.padTop(50);
 		table2.padTop(50);
-		table5.padBottom(150);
 		table1.align(Align.left);
 		table1.padLeft(50);
 		table2.align(Align.right);
 		table2.padRight(50);
 		table3.align(Align.top);
 		table4.align(Align.bottom);
-		table5.align((Align.center));
 		stage.addActor(table1);
 		stage.addActor(table2);
 		stage.addActor(table3);
@@ -176,20 +168,33 @@ public class Game implements Screen {
 		buttons.add(Drago);
 		Drago.setCosto(1000000);
 		Drago.setAttacco(2000);
+		life = new ProgressBar(0,enemy.getLife(),1,false,skin);
+		life.setVisible(true);
+		life.setValue(life.getMaxValue());
+		table3.row();
+		table3.add(life).padTop(20);
 		int check = 0;
 		if(nuovo == true){
 			check = 1;
 		}
-		 else{check = dat.getUnlocked();}
+		 else{
+		 	check = dat.getUnlocked();
+		 	i = dat.getEnemy();
+		 	life.setValue(dat.getLife());
+		 	enemy.setLife(dat.getLife());
+			enemy.setTexture(new Texture(enemies[i]));
+		 }
+
 		for(int i = 0; i< check;++i){
 			buttons.get(i).setDisabled(false);
 			buttons.get(i).setText(buttons.get(i).name +"\n A:" + String.valueOf(buttons.get(i).getAttacco()));
 		}
+
 		for(int i = check; i<10;++i){
 			buttons.get(i).setDisabled(true);
 		}
 		for(MyButton a:buttons){
-			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a,enemy));
+			a.addListener(new MyClickListener(l2,a.getCosto(),a.getAttacco(),a,enemy,life));
 		}
 		TextButton Save = new TextButton("Salva",skin);
 		Save.setColor(0,1,0,1);
@@ -197,10 +202,24 @@ public class Game implements Screen {
 		Esci.setColor(1,0,0,1);
 		table4.add(Save).width(200).height(100).padRight(20);
 		table4.add(Esci).width(200).height(100);
+
+		Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				sconfitta.show(stage);
+			}
+		};
+		final Check t = new Check(l2);
+		t.setUncaughtExceptionHandler(handler);
+		t.start();
+
 		Esci.addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
+				t.terminate();
+
+
 				Gdx.app.exit();
 			}
 		});
@@ -213,77 +232,69 @@ public class Game implements Screen {
 						val--;
 					}
 				}
-				dat.save(Integer.valueOf(String.valueOf(l2.getText())),val);
+				dat.save(Integer.valueOf(String.valueOf(l2.getText())),val,i, (int) life.getValue());
 			}
 		});
 
-//La parte dei dialoghi non funziona
-		ok1=new TextButton("ok",skin);
-		ok2=new TextButton("ok",skin);
 
-		vittoria=new Dialog("",skin){
-			protected void result(Object object){
-				if((Boolean) object){
-					setVisible(false);
-				}
+		ok2 = new TextButton("oh no",skin);
+		ok2.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				dat.save(0,1,0,1000);
+				t.terminate();
+				Gdx.app.exit();
 			}
-		};
-		vittoria.text("Hai sconfitto il nemico");
-		vittoria.button(ok1,true);
+		});
 
-
-		sconfitta=new Dialog("",skin){
-			protected void result(Object object){
-				if((Boolean) object){
-					setVisible(false);
-				}
-			}
-		};
+		sconfitta=new Dialog("",skin);
 		sconfitta.text("Hai perso");
-		sconfitta.button(ok2,true);
-
+		sconfitta.button(ok2);
 
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
-
-
 	}
 
 
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
+
+
 	}
 
 	public void render(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
-		batch.draw(enem,700,200);
-		if(timeel>5 && finito==false) {
+		batch.draw(enemy.getTexture(),500,200);
+
+		if(timeel>5 ) {
 			punteggio = Integer.parseInt(String.valueOf(l2.getText()));
-			controattacco=rnd.nextInt(20*conta);
+			controattacco = rnd.nextInt(15*conta);
 			l2.setText(Integer.toString(punteggio - controattacco));
 			enemy.rinforza(controattacco);
 			conta++;
 			timeel=0;
-			partita=true;
 		}
 		else{
 			timeel+= delta;
 		}
+		if(life.getValue()==0){
+			i = i+1;
+			enemy.setLife(enemy.getLife()*10);
+			life.setRange(0,enemy.getLife());
+			life.setValue(enemy.getLife());
+			enemy.setTexture(new Texture(enemies[i]));
+			conta = 1;
+		}
 
-		if(punteggio<=0 && partita==true){
-			sconfitta.show(stage);
-			finito=true;
-		}
-		if(enemy.getDanno()>=15000 && finito==false){
-			vittoria.show(stage);
-			finito=true;
-		}
 		batch.end();
 		stage.draw();
 	}
+
+
 
 	@Override
 	public void resize(int width, int height) {

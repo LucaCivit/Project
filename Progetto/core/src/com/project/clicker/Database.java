@@ -32,24 +32,28 @@ public class Database {
            rs = st.executeQuery("SELECT * FROM player ");
            System.out.println("ID = "+ rs.getString("ID"));
            System.out.println("score = " + rs.getString("score"));
-            System.out.println("unlocked = " + rs.getString("unlocked"));
+           System.out.println("unlocked = " + rs.getString("unlocked"));
+           System.out.println("nemico = "+ rs.getString("nemico"));
+           System.out.println("vita = "+ rs.getString("vita"));
            System.out.println("time = " + rs.getString("time"));
         }
         catch (SQLException e) {
             st.executeUpdate("DROP TABLE IF EXISTS player");
-            st.executeUpdate("CREATE TABLE player ( ID INTEGER,score INTEGER,unlocked INTEGER,time TEXT,PRIMARY KEY (ID))");
-            upst = connection.prepareStatement("INSERT INTO player VALUES (1 , 0 , 1 , 0)");
+            st.executeUpdate("CREATE TABLE player ( ID INTEGER,score INTEGER,unlocked INTEGER,nemico INTEGER,vita INTEGER,time TEXT,PRIMARY KEY (ID))");
+            upst = connection.prepareStatement("INSERT INTO player VALUES (1 , 0 , 1 ,0,1000, 0)");
             upst.executeUpdate();
         }
     }
 
-    public void save(int Score,int unlocked){
+    public void save(int Score,int unlocked,int nem,int vit){
         try {
             String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
-            upst = connection.prepareStatement("UPDATE player SET score=?,unlocked=?, time=? WHERE ID = 1");
+            upst = connection.prepareStatement("UPDATE player SET score=?,unlocked=?,nemico=?,vita=?,time=? WHERE ID = 1");
             upst.setInt(1,Score);
             upst.setInt(2,unlocked);
-            upst.setString(3,timeStamp);
+            upst.setInt(3,nem);
+            upst.setInt(4,vit);
+            upst.setString(5,timeStamp);
             upst.executeUpdate();
 
         } catch (SQLException e) {
@@ -92,6 +96,29 @@ public class Database {
         }
         return time;
     }
+    public int getEnemy(){
+        int en = 0;
+
+        try {
+            rs = st.executeQuery("SELECT * FROM player");
+            en = rs.getInt("nemico");
+        } catch (SQLException e) {
+        e.printStackTrace();
+        }
+        return en;
+    }
+    public int getLife(){
+        int li = 0;
+
+        try {
+            rs = st.executeQuery("SELECT * FROM player");
+            li = rs.getInt("vita");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return li;
+    }
+
 
 
     public void close() {
