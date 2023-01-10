@@ -1,34 +1,18 @@
 package com.project.clicker;
 
-
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.text.*;
-import java.util.List;
-
 
 public class Game implements Screen {
     private com.badlogic.gdx.Game g;
@@ -52,9 +36,11 @@ public class Game implements Screen {
 	private int conta=1;
     private int controattacco;
     public Dialog sconfitta;
+    public Dialog vittoria;
     public ProgressBar life ;
     public String[] enemies ={"badguy.png","golem.png","blob.png","drago.png"};
     public int i = 0;
+    public boolean partita=true;
 
 
 
@@ -102,8 +88,8 @@ public class Game implements Screen {
 		table2.add(Spadaccino).width(200).height(100).padBottom(20);
 		table2.row();
 		buttons.add(Spadaccino);
-		Spadaccino.setAttacco(10);
-		Spadaccino.setCosto(5);
+		Spadaccino.setAttacco(5);
+		Spadaccino.setCosto(10);
 
 
 		MyButton Cavaliere = new MyButton("Cavaliere \n C:50 A:20 ",skin,"Cavaliere");
@@ -206,6 +192,7 @@ public class Game implements Screen {
 		Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
+				partita=false;
 				sconfitta.show(stage);
 			}
 		};
@@ -218,8 +205,6 @@ public class Game implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
 				t.terminate();
-
-
 				Gdx.app.exit();
 			}
 		});
@@ -233,6 +218,16 @@ public class Game implements Screen {
 					}
 				}
 				dat.save(Integer.valueOf(String.valueOf(l2.getText())),val,i, (int) life.getValue());
+			}
+		});
+
+		ok1 = new TextButton("Yeah!",skin);
+		ok1.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				t.terminate();
+				Gdx.app.exit();
 			}
 		});
 
@@ -252,6 +247,9 @@ public class Game implements Screen {
 		sconfitta.text("Hai perso");
 		sconfitta.button(ok2);
 
+		vittoria=new Dialog("",skin);
+		vittoria.text("Hai vinto");
+		vittoria.button(ok1);
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("sfondo.jpg")));
 		sprite.setSize(stage.getWidth(), stage.getHeight());
@@ -270,9 +268,9 @@ public class Game implements Screen {
 		sprite.draw(batch);
 		batch.draw(enemy.getTexture(),500,200);
 
-		if(timeel>5 ) {
+		if(timeel>5 && partita==true) {
 			punteggio = Integer.parseInt(String.valueOf(l2.getText()));
-			controattacco = rnd.nextInt(15*conta);
+			controattacco = rnd.nextInt(15*conta*conta);
 			l2.setText(Integer.toString(punteggio - controattacco));
 			enemy.rinforza(controattacco);
 			conta++;
@@ -282,6 +280,11 @@ public class Game implements Screen {
 			timeel+= delta;
 		}
 		if(life.getValue()==0){
+			if(i==3){
+				partita=false;
+				vittoria.show(stage);
+			}
+
 			i = i+1;
 			enemy.setLife(enemy.getLife()*10);
 			life.setRange(0,enemy.getLife());

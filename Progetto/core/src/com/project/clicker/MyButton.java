@@ -3,9 +3,6 @@ package com.project.clicker;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 
 public class MyButton extends TextButton {
     int attacco = 0;
